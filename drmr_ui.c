@@ -120,7 +120,9 @@ static void fill_sample_table(DrMrUi* ui, int samples, char** names,GtkWidget** 
     GtkWidget* gain_label;
     GtkWidget* pan_label;
     gboolean slide_expand;
-    snprintf(buf,64,"<b>%s</b> (%i)",names[si],si);
+    char name[16] = "";
+    strncpy(name, names[si], sizeof name - 1);
+    snprintf(buf,64,"<b>%s</b> (%i)",name,si);
 
     frame = gtk_frame_new(buf);
     gtk_label_set_use_markup(GTK_LABEL(gtk_frame_get_label_widget(GTK_FRAME(frame))),true);
