@@ -247,6 +247,7 @@ static gboolean kit_callback(gpointer data) {
     int samples = (ui->kitReq<ui->kits->num_kits && ui->kitReq >= 0)?
       ui->kits->kits[ui->kitReq].samples:
       0;
+    if (samples > 24) samples = 24;
     GtkWidget** gain_sliders;
     GtkWidget** pan_sliders;
     if (ui->sample_table) {
