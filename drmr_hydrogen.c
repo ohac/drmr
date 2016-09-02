@@ -264,7 +264,7 @@ kits* scan_kits() {
 	memset(&info,0,sizeof(struct hp_info));
 	memset(&kit_info,0,sizeof(struct kit_info));
 	info.kit_info = &kit_info;
-	info.scan_only = 1;
+	info.scan_only = 0;
 	XML_SetUserData(parser, &info);
 	XML_SetElementHandler(parser, startElement, endElement);  
 	XML_SetCharacterDataHandler(parser, charData);
@@ -290,7 +290,13 @@ kits* scan_kits() {
 	  kit->desc = info.kit_info->desc;
 	  
 	  struct instrument_info *cur_i = info.kit_info->instruments;
+	  int dummyinst = 0;
 	  while (cur_i) {
+	    if (!cur_i->filename && cur_i->layers == 0) {
+		dummyinst++;
+	    } else {
+		dummyinst = 0;
+	    }
 	    kit->samples++;
 	    cur_i = cur_i->next;
 	  }
@@ -305,6 +311,7 @@ kits* scan_kits() {
 	    cur_i = cur_i->next;
 	    free(to_free);
 	  }
+	  kit->samples -= dummyinst;
 
 	  snprintf(buf,BUFSIZ,"%s/%s/",cur_path,ep->d_name);
 	  kit->path = strdup(buf);
