@@ -122,6 +122,10 @@ static void fill_sample_table(DrMrUi* ui, int samples, char** names,GtkWidget** 
     gboolean slide_expand;
     char name[16] = "";
     strncpy(name, names[si], sizeof name - 1);
+    for (int i = 0; i < sizeof name - 1; i++) {
+      if (name[i] == 0) break;
+      if (name[i] < 32) name[i] = '_';
+    }
     snprintf(buf,64,"<b>%s</b> (%i)",name,si);
 
     frame = gtk_frame_new(buf);
