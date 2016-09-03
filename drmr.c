@@ -352,11 +352,89 @@ lv2_descriptor(uint32_t index)
 
 static int wellknown_kit_group(char* name, int n)
 {
-  if (strcmp(name, "Audiophob") == 0) {
+  if (strcmp(name, "Audiophob") == 0 ||
+      strcmp(name, "GMkit") == 0 ||
+      strcmp(name, "Millo-Drums_v.1") == 0 ||
+      strcmp(name, "Millo_MultiLayered2") == 0 ||
+      strcmp(name, "Millo_MultiLayered3") == 0 ||
+      strcmp(name, "ColomboAcousticDrumkit") == 0) {
     switch (n) {
       case 6:
       case 8:
 	return 10;
+    }
+  }
+  else if (strcmp(name, "The Black Pearl 1.0") == 0) {
+    switch (n) {
+      case 6:
+      case 8:
+	return 10; // TODO and 11
+    }
+  }
+  else if (strcmp(name, "HardElectro1") == 0) {
+    switch (n) {
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+	return 10;
+    }
+  }
+  else if (strcmp(name, "HipHop-1") == 0) {
+    switch (n) {
+      case 10:
+      case 11:
+      case 12:
+	return 13;
+    }
+  }
+  else if (strcmp(name, "DeathMetal") == 0) {
+    switch (n) {
+      case 19:
+      case 20:
+	return 17; // TODO and 18,21,22
+    }
+  }
+  else if (strcmp(name, "BJA_Pacific") == 0) {
+    switch (n) {
+      case 1:
+	return 11;
+      case 2:
+	return 3; // TODO and 13
+    }
+  }
+  else if (strcmp(name, "YamahaVintageKit") == 0) {
+    switch (n) {
+      case 5:
+	return 6;
+    }
+  }
+  else if (strcmp(name, "Classic-626") == 0) {
+    switch (n) {
+      case 13:
+	return 14;
+    }
+  }
+  else if (strcmp(name, "K-27_Trash_Kit") == 0) {
+    switch (n) {
+      case 3:
+      case 5:
+	return 4;
+    }
+  }
+  else if (strcmp(name, "Lightning1024") == 0) {
+    switch (n) {
+      case 6:
+      case 7:
+      case 8:
+	return 9;
+    }
+  }
+  else if (strcmp(name, "Forzee Stereo Drumkit") == 0) {
+    switch (n) {
+      case 9:
+      case 12:
+	return 10; // TODO and 11
     }
   }
   return -1;
