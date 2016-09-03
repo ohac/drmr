@@ -239,7 +239,8 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
     while (lv2_event_is_valid(&eit)) {
       cur_ev = lv2_event_get(&eit,&data);
       if (cur_ev->type == drmr->uris.midi_event) {
-	//int channel = *data & 15;
+	int channel = *data & 15;
+if (channel == 10 - 1) {
 	switch ((*data) >> 4) {
 	case 8:
 	  if (!ignno) {
@@ -264,6 +265,7 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 	default:
 	  printf("Unhandeled status: %i\n",(*data)>>4);
 	}
+}
       } else printf("unrecognized event\n");
       lv2_event_increment(&eit);
     } 
