@@ -218,6 +218,8 @@ static inline void untrigger_sample(DrMr *drmr, int nn) {
 // taken from lv2 example amp plugin
 #define DB_CO(g) ((g) > GAIN_MIN ? powf(10.0f, (g) * 0.05f) : 0.0f)
 
+static int wellknown_kit_group(char* name, int n);
+
 static void run(LV2_Handle instance, uint32_t n_samples) {
   int i,kitInt,baseNote,ignno;
   DrMr* drmr = (DrMr*)instance;
@@ -250,6 +252,13 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 	  nn = data[1];
 	  nn-=baseNote;
 	  trigger_sample(drmr,nn,data);
+	  int kitn = drmr->curKit;
+	  if (kitn >= 0 && kitn < drmr->kits->num_kits) {
+	    int nn2 = wellknown_kit_group(drmr->kits->kits[kitn].name, nn);
+	    if (nn2 >= 0) {
+	      untrigger_sample(drmr, nn2);
+	    }
+	  }
 	  break;
 	}
 	default:
@@ -339,4 +348,16 @@ lv2_descriptor(uint32_t index)
   default:
     return NULL;
   }
+}
+
+static int wellknown_kit_group(char* name, int n)
+{
+  if (strcmp(name, "Audiophob") == 0) {
+    switch (n) {
+      case 6:
+      case 8:
+	return 10;
+    }
+  }
+  return -1;
 }
