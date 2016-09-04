@@ -239,7 +239,10 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
       cur_ev = lv2_event_get(&eit,&data);
       if (cur_ev->type == drmr->uris.midi_event) {
 	int channel = *data & 15;
-if (channel == 10 - 1) {
+char* chstr = getenv("DRMR_MIDICH");
+int ch = chstr == NULL ? 0 : atoi(chstr);
+ch--;
+if (ch < 0 || channel == ch) {
 	switch ((*data) >> 4) {
 	case 8:
 	  if (!ignno) {
