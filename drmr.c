@@ -217,7 +217,9 @@ static inline void untrigger_sample(DrMr *drmr, int nn) {
 // taken from lv2 example amp plugin
 #define DB_CO(g) ((g) > GAIN_MIN ? powf(10.0f, (g) * 0.05f) : 0.0f)
 
+static scanned_kit* getCurKit(DrMr *drmr);
 static int wellknown_kit_group(char* name, int n);
+static int mod_nn(int nn, int num);
 
 static void run(LV2_Handle instance, uint32_t n_samples) {
   int i,kitInt,baseNote,ignno;
@@ -246,18 +248,21 @@ if (ch < 0 || channel == ch) {
 	switch ((*data) >> 4) {
 	case 8:
 	  if (!ignno) {
+	    scanned_kit* kit = getCurKit(drmr);
 	    nn = data[1];
 	    nn-=baseNote;
+	    if (kit != NULL) nn = mod_nn(nn, kit->samples);
 	    untrigger_sample(drmr,nn);
 	  }
 	  break;
 	case 9: {
+	  scanned_kit* kit = getCurKit(drmr);
 	  nn = data[1];
 	  nn-=baseNote;
+	  if (kit != NULL) nn = mod_nn(nn, kit->samples);
 	  trigger_sample(drmr,nn,data);
-	  int kitn = drmr->curKit;
-	  if (kitn >= 0 && kitn < drmr->kits->num_kits) {
-	    int nn2 = wellknown_kit_group(drmr->kits->kits[kitn].name, nn);
+	  if (kit != NULL) {
+	    int nn2 = wellknown_kit_group(kit->name, nn);
 	    if (nn2 >= 0) {
 	      untrigger_sample(drmr, nn2);
 	    }
@@ -354,6 +359,13 @@ lv2_descriptor(uint32_t index)
   }
 }
 
+static scanned_kit* getCurKit(DrMr *drmr)
+{
+  int kitn = drmr->curKit;
+  if (kitn < 0 && kitn >= drmr->kits->num_kits) return NULL;
+  return &drmr->kits->kits[kitn];
+}
+
 static int wellknown_kit_group(char* name, int n)
 {
   if (strcmp(name, "Audiophob") == 0 ||
@@ -442,4 +454,12 @@ static int wellknown_kit_group(char* name, int n)
     }
   }
   return -1;
+}
+
+static int mod_nn(int nn, int num)
+{
+  if (num <= 12) return nn % 12;
+  if (num <= 17) return nn % 17;
+  if (num <= 19) return nn % 19;
+  return nn;
 }
