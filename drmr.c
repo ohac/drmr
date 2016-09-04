@@ -166,8 +166,7 @@ connect_port(LV2_Handle instance,
 
 static inline void layer_to_sample(drmr_sample *sample, float gain) {
   int i;
-  float mapped_gain = (1-(gain/GAIN_MIN));
-  if (mapped_gain > 1.0f) mapped_gain = 1.0f;
+  float mapped_gain = gain;
   for(i = 0;i < sample->layer_count;i++) {
     if (sample->layers[i].min <= mapped_gain &&
 	(sample->layers[i].max > mapped_gain ||
@@ -192,14 +191,14 @@ static inline void trigger_sample(DrMr *drmr, int nn, uint8_t* const data) {
   int ignvel = (int)floorf(*(drmr->ignore_velocity));
   pthread_mutex_lock(&drmr->load_mutex);
   if (nn >= 0 && nn < drmr->num_samples) {
-    if (drmr->samples[nn].layer_count > 0) {
-      layer_to_sample(drmr->samples+nn,*(drmr->gains[nn]));
-      if (drmr->samples[nn].limit == 0)
-	fprintf(stderr,"Failed to find layer at: %i for %f\n",nn,*drmr->gains[nn]);
-    }
     drmr->samples[nn].active = 1;
     drmr->samples[nn].offset = 0;
     drmr->samples[nn].velocity = ignvel?1.0:((float)data[2])/VELOCITY_MAX;
+    if (drmr->samples[nn].layer_count > 0) {
+      layer_to_sample(drmr->samples+nn, drmr->samples[nn].velocity);
+      if (drmr->samples[nn].limit == 0)
+	fprintf(stderr,"Failed to find layer at: %i for %f\n",nn,*drmr->gains[nn]);
+    }
   }
   pthread_mutex_unlock(&drmr->load_mutex);
 }
