@@ -83,12 +83,9 @@ instantiate(const LV2_Descriptor*     descriptor,
 
   // Map midi uri
   while(*features) {
-    if (!strcmp((*features)->URI, LV2_URI_MAP_URI)) {
-      drmr->map = (LV2_URI_Map_Feature *)((*features)->data);
-      drmr->uris.midi_event = drmr->map->uri_to_id
-	(drmr->map->callback_data,
-	 "http://lv2plug.in/ns/ext/event",
-	 "http://lv2plug.in/ns/ext/midi#MidiEvent");
+    if (!strcmp((*features)->URI, LV2_URID__map)) {
+      drmr->map = (LV2_URID_Map *)((*features)->data);
+      drmr->uris.midi_event = drmr->map->map(drmr->map->handle, "http://lv2plug.in/ns/ext/midi#MidiEvent");
     }
     features++;
   }

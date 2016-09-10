@@ -23,7 +23,7 @@
 #include "lv2/lv2plug.in/ns/lv2core/lv2.h"
 #include "lv2/lv2plug.in/ns/ext/event/event.h"
 #include "lv2/lv2plug.in/ns/ext/event/event-helpers.h"
-#include "lv2/lv2plug.in/ns/ext/uri-map/uri-map.h"
+#include "lv2/lv2plug.in/ns/ext/urid/urid.h"
 
 // drumkit scanned from a hydrogen xml file
 typedef struct {
@@ -158,7 +158,7 @@ typedef struct {
   double rate;
 
   // URIs
-  LV2_URI_Map_Feature* map;
+  LV2_URID_Map* map;
   struct {
     uint32_t midi_event;
   } uris;
